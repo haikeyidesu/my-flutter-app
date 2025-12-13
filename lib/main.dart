@@ -71,44 +71,50 @@ class _MyHomePageState extends State<MyHomePage> {
         throw UnimplementedError('no widget for $selectedIndex');
     }
 
-    return Scaffold(
-      body: Row(
-        children: [
-          SafeArea(
-            // adding navigation rail
-            child: NavigationRail(
-              extended: false,
-              destinations: [
-                // home navigation with icon and label
-                NavigationRailDestination(
-                  icon: Icon(Icons.home),
-                  label: Text('Home'),
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        return Scaffold(
+          body: Row(
+            children: [
+              SafeArea(
+                // adding navigation rail
+                child: NavigationRail(
+                  // add contraints under extended
+                  // when the max width is >= 600, the rail will be extended to show labels
+                  extended: constraints.maxWidth >= 600,
+                  destinations: [
+                    // home navigation with icon and label
+                    NavigationRailDestination(
+                      icon: Icon(Icons.home),
+                      label: Text('Home'),
+                    ),
+                    // favorites navigation with icon and label
+                    NavigationRailDestination(
+                      icon: Icon(Icons.favorite),
+                      label: Text('Favorites'),
+                    ),
+                  ],
+                  // selects selected index (of the navigation rail)
+                  selectedIndex: selectedIndex,
+                  onDestinationSelected: (value) {
+                    // updates selected index state
+                    setState(() {
+                      selectedIndex = value;
+                    });
+                  },
                 ),
-                // favorites navigation with icon and label
-                NavigationRailDestination(
-                  icon: Icon(Icons.favorite),
-                  label: Text('Favorites'),
+              ),
+              Expanded(
+                child: Container(
+                  color: Theme.of(context).colorScheme.primaryContainer,
+                  // displaying the set selected page
+                  child: page,
                 ),
-              ],
-              // selects selected index (of the navigation rail)
-              selectedIndex: selectedIndex,
-              onDestinationSelected: (value) {
-                // updates selected index state
-                setState(() {
-                  selectedIndex = value;
-                });
-              },
-            ),
+              ),
+            ],
           ),
-          Expanded(
-            child: Container(
-              color: Theme.of(context).colorScheme.primaryContainer,
-              // displaying the set selected page
-              child: page,
-            ),
-          ),
-        ],
-      ),
+        );
+      },
     );
   }
 }
